@@ -1,4 +1,5 @@
 User-agent: *
 Disallow:
 
-Sitemap: https://yourdomain.com/sitemap.xml
+
+Sitemap: https://https://konskall-ai.github.io/sitemap.xml
