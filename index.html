@@ -21,7 +21,6 @@
 <meta property="og:image" content="https://konskall-ai.github.io/SmartPDFCompressor.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
-
 <!-- Twitter Card meta tags -->
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:url" content="https://konskall-ai.github.io" />
@@ -78,8 +77,7 @@
     body {
       font-family: 'Inter', system-ui, sans-serif;
     }
-	
-	.page-card {
+  .page-card {
   background: linear-gradient(180deg, #6f7fa 0%, #f6f7fa 100%);
   border-radius: 22px;
   border: 1.9px solid rgba(36, 68, 118, 0.15);
@@ -89,17 +87,14 @@
   box-sizing: border-box;
   overflow: hidden;
 }
-
 .page-card header,
 .page-card main,
 .page-card footer {
   margin-bottom: 24px;
 }
-
 .page-card footer {
   margin-bottom: 0;
 }
-	
     header {
       background: linear-gradient(92deg, var(--accent), var(--navy2));
       color: var(--white);
@@ -268,7 +263,7 @@
       margin: 7px 0 0 2px;
       font-size: 14px;
     }
-   progress {
+  progress {
   width: 100%;
   height: 11px;
   border-radius: 7px;
@@ -277,18 +272,15 @@
   appearance: none;
   -webkit-appearance: none;
 }
-
 /* Για Chrome/Safari */
 progress::-webkit-progress-bar {
   background: #eaf0fa;
   border-radius: 7px;
 }
-
 progress::-webkit-progress-value {
   background: linear-gradient(90deg, var(--accent), #43b8fd);
   border-radius: 7px;
 }
-
 /* Για Firefox */
 progress::-moz-progress-bar {
   background: linear-gradient(90deg, var(--accent), #43b8fd);
@@ -332,13 +324,11 @@ progress::-moz-progress-bar {
 	  padding: 25px 0 20px;
 	  box-shadow: 0 -6px 24px rgba(20,40,80,0.17);
     }
-	
 	#loadingIndicator {
   text-align: center;
   margin-top: 15px;
   display: none;
 }
-
 .spinner {
   margin: auto;
   border: 4px solid #eaeaea;
@@ -348,12 +338,10 @@ progress::-moz-progress-bar {
   height: 30px;
   animation: spin 1s linear infinite;
 }
-
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
-
 /* Responsive styles */
 @media (max-width: 600px) {
   footer {
@@ -449,14 +437,12 @@ progress::-moz-progress-bar {
   font-size: 16px;
   color: #db8a00;
 }
-
 @media (max-width: 1000px) {
   #cannotCompressInfo {
     max-width: 95vw;
     margin: 25px auto 12px auto;
   }
 }
-
 @media (max-width: 900px) {
   #cannotCompressInfo {
     max-width: 89vw;
@@ -464,7 +450,6 @@ progress::-moz-progress-bar {
     padding: 18px 3vw 12px 3vw;
   }
 }
-
 @media (max-width: 600px) {
   #cannotCompressInfo {
     max-width: 88vw;
@@ -573,28 +558,23 @@ progress::-moz-progress-bar {
     const progressText = document.getElementById('progressText');
     const results = document.getElementById('results');
     const loadingIndicator = document.getElementById('loadingIndicator');
-    
     let selectedFile = null;
-
     function fmtBytes(n) {
       if (!n && n !== 0) return '0 B';
       const k = 1024, sizes = ['B', 'KB', 'MB', 'GB'];
       const i = Math.floor(Math.log(n) / Math.log(k));
       return (n / Math.pow(k, i)).toFixed(2) + ' ' + sizes[i];
     }
-	
 	function uploadWithProgress(formData, onProgress) {
-  return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open('POST', `${API_URL}/api/compress`, true);
     xhr.responseType = 'arraybuffer'; // ΝΕΑ ΓΡΑΜΜΗ - Όχι text, αλλά arraybuffer!
-
     xhr.upload.onprogress = (e) => {
       if (e.lengthComputable && typeof onProgress === 'function') {
         onProgress((e.loaded / e.total) * 100);
       }
     };
-
     xhr.onreadystatechange = () => {
       if (xhr.readyState === 4) {
         if (xhr.status >= 200 && xhr.status < 300) {
@@ -624,12 +604,10 @@ progress::-moz-progress-bar {
         }
       }
     };
-
     xhr.onerror = () => reject(new Error("Network error"));
     xhr.send(formData);
   });
 }
-
     function setFile(f) {
       selectedFile = f;
       previewZone.style.display = 'block';
@@ -638,8 +616,6 @@ progress::-moz-progress-bar {
       compressBtn.disabled = false;
       results.style.display = 'none';
     }
-	
-
     drop.addEventListener('click', () => fileInput.click());
     drop.addEventListener('dragover', e => {
       e.preventDefault();
@@ -666,7 +642,6 @@ progress::-moz-progress-bar {
       selectedFile = null;
       results.style.display = 'none';
     });
-
     compressBtn.addEventListener('click', async () => {
   if (!selectedFile) return;
 if (selectedFile.size > 10 * 1024 * 1024) {
@@ -692,27 +667,22 @@ if (selectedFile.size > 10 * 1024 * 1024) {
   progressWrap.style.display = 'block';
   progress.value = 0;
   results.style.display = 'none';
-
   try {
     const formData = new FormData();
     formData.append('pdf', selectedFile);
     formData.append('compressionLevel', qualitySel.value);
-
     // Πραγματικό progress
     const blob = await uploadWithProgress(formData, percent => {
       progress.value = percent;
       progressText.textContent = `Ανέβασμα PDF... (${percent.toFixed(1)}%)`;
     });
-
     // Μετά το upload, άσε το progress bar ολοκληρωμένο
     progress.value = 100;
     progressText.textContent = "Επεξεργασία και λήψη...";
-
     const compressedSize = blob.size;
     const originalSize = selectedFile.size;
     const reduction = originalSize - compressedSize;
     const pct = originalSize > 0 ? ((reduction / originalSize) * 100).toFixed(1) : '0.0';
-
     // Download blob
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -724,7 +694,6 @@ if (selectedFile.size > 10 * 1024 * 1024) {
       URL.revokeObjectURL(url);
       a.remove();
     }, 110);
-
     results.innerHTML = `
       <div class="stat"><span class="label">Αρχικό μέγεθος:</span><span class="value">${fmtBytes(originalSize)}</span></div>
       <div class="stat"><span class="label">Τελικό μέγεθος:</span><span class="value">${fmtBytes(compressedSize)}</span></div>
@@ -737,7 +706,6 @@ if (selectedFile.size > 10 * 1024 * 1024) {
     results.style.display = 'block';
     progressText.textContent = "Ολοκληρώθηκε!";
     setTimeout(() => progressWrap.style.display = 'none', 1200);
-
   } catch (err) {
     let errorMsg = err.message || 'Απέτυχε η συμπίεση.';
     if (errorMsg.includes(';')) errorMsg = errorMsg.split(';')[0].trim();
@@ -758,5 +726,4 @@ if (selectedFile.size > 10 * 1024 * 1024) {
   </div>
 </body>
 </html>
-
 <!-- Made by KonsKall -->
